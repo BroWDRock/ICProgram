@@ -129,12 +129,66 @@ string enc3(string st){
 	return st;
 }
 
+void leerFichero(char eleccion)
+{
+    ifstream f;
+    fstream fich;
+    string leer;
+    string nombreFichero = "fichero.txt";
+    string nombre="resultado.txt";
+    fich.open(nombre.c_str(),ios::out);
+    //comprobamos que no se haya introducido el nombre del fichero
+    if(nombreFichero == "")
+    {
+        cout << "Filename: ";
+        getline(cin, nombreFichero);
+    }
+    
+    f.open(nombreFichero.c_str());//abrimos el fichero
+    
+    if(f.is_open() && fich.is_open())
+    {
+        do
+        {
+            if(eleccion == '1')
+            {
+                getline(f, leer);
+                
+                fich<<enc1(leer)<<endl;
+            }
+            else if(eleccion == '2')
+            {
+                getline(f, leer);
+                 fich<<enc2(leer)<<endl;
+            }
+            else if(eleccion == '3')
+            {
+                getline(f, leer);
+                 fich<<enc3(leer)<<endl;
+            }
+            else
+            {
+                cout << "\nCagada Monumental" << endl;
+            }
+            
+        } while(f.eof()==false);
+        
+        f.close();//Cerramos el fichero
+        fich.close();
+    }
+    else
+    {
+        cout << "Error. Can't open file.";
+    }
+}
+
 void encriptar()
 {
     char op;
+    char eleccion;
     do
     {
-        cout << "\nWich type of encrypt do you want?" << endl;
+        cout << "\nWhich type of encrypt do you want?" << endl;
         cout << "Type 1" << endl;
         cout << "Type 2" << endl;
         cout << "Type 3\n" << endl;
@@ -143,22 +197,23 @@ void encriptar()
         cin >> op;
         
         cout << endl;
+        
         switch(op)
         {
             case '1':
-                enc1("Hola Mundo");
-            
+                leerFichero(op);
+                
                 break;
-            
+                
             case '2':
-                enc2("Hola Mundo");
-            
+                leerFichero('2');
+                
                 break;
-            
+                
             case '3':
-                enc3("Hola Mundo");
+                leerFichero('3');
                 break;
-            
+                
             default: cout << "\nError. Option not valid.\n" << endl;
         }
         
@@ -174,6 +229,7 @@ void menu()
 {
     long double t_inicial, t_final, t_ejecucion;
     char op;
+     string nuevo;
     
     do {
         cout << "\n1. Encrypt file." << endl;
@@ -209,10 +265,11 @@ void menu()
                 cout << "The program has ended." << endl;
                 break;
                 
+                
             default: cout << "\nError. Option not valid.\n" << endl;
         }
         
-    } while(op != '1' && op != '2' && op != '3');
+    } while(op != '3');
 }
 
 int main()
