@@ -90,8 +90,7 @@ string enc2(string st){
 		st[i]=aux%33+32+99;
 	  }
 	}
-        cout << st << endl;
-	denc2(st);
+    cout << st << endl;
 	return st;
 }
 
