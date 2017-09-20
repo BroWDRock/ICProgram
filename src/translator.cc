@@ -125,7 +125,6 @@ string enc3(string st){
 	}
     
     cout << st << endl;
-	denc3(st);
 	return st;
 }
 
