@@ -12,18 +12,25 @@ long double tiempo(){
 		(long double) usage.ru_utime.tv_usec/1e6);
 }
 
-void escribirFichero(string fichero){
-fstream fich;
- string nombre="resultado.txt";
-    fich.open(nombre.c_str(),ios::out);
 
-    if(!fich.is_open()){
-        cout<<"no one expects the spanish inquisition"<<endl;
-    }else{
-     fich<<fichero;
+void escribirFichero(string fichero)
+{
+    ofstream fich;
+    string nombre = "resultado.txt";
+
+    fich.open(nombre.c_str(), ios::out);
+
+    if(fich.is_open()) {
+        
+        fich << "Hola Mundo\n";
+
+        fich.close();
     }
-    fich.close();
+    else {
+        cout << "ERROR. Problem opening the file.";
+    }
 }
+
 string denc1(string st){
 	int i;
 	int val;
@@ -41,7 +48,7 @@ string denc1(string st){
 	return st;
 }
 
-string enc1(string st){
+void enc1(string st){
 	int i;
 	int val;
 	for(i=0;i<st.length();i++){
@@ -55,8 +62,6 @@ string enc1(string st){
 	  st[i]=val;
 	}
 	escribirFichero(st);
-    cout << st << endl;
-	return st;
 }
 
 string denc2(string st){
@@ -186,7 +191,6 @@ void leerFichero(char eleccion)
         } while(f.eof()==false);
 
         f.close();//Cerramos el fichero
-        fich.close();
     }
     else
     {
