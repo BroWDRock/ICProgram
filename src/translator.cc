@@ -92,12 +92,12 @@ string denc3(string st){
 	int val;
 	for(i=0;i<st.length();i++){
 	  if(st[i]>32){
-		val=st[i]-32;
-		val=48*(val-3)%95;
+		val=st[i]-33;
+		val=47*(val-3)%93;
 		if(val<0){
-		  val=95+val;
+		  val=93+val;
 		}
-		st[i]=val+32;
+		st[i]=val+33;
 	  }
 	}
 	return st;
@@ -108,9 +108,9 @@ string enc3(string st){
 	int val;
 	for(i=0;i<st.length();i++){
 	  if(st[i]>32){
-		val=st[i]-32;		
-		val=(2*val+3)%95;
-		st[i]=val+32;
+		val=st[i]-33;		
+		val=(2*val+3)%93;
+		st[i]=val+33;
 	  }
 	}
 	return st;
