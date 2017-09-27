@@ -3,7 +3,13 @@
 #include <sys/resource.h>
 #include <string>
 #include <math.h>
+#include <vector>
 using namespace std;
+
+string INPUT, OUTPUT;
+
+const string ENCRYPT_TIME = "Time needed to encrypt the file: ";
+const string DECRYPT_TIME = "Time needed to decrypt the file: ";
 
 long double tiempo(){
 	struct rusage usage;
@@ -12,23 +18,13 @@ long double tiempo(){
 		(long double) usage.ru_utime.tv_usec/1e6);
 }
 
-
-void escribirFichero(string fichero)
-{
-    ofstream fich;
-    string nombre = "resultado.txt";
-
-    fich.open(nombre.c_str(), ios::out);
-
-    if(fich.is_open()) {
-        
-        fich << "Hola Mundo\n";
-
-        fich.close();
-    }
-    else {
-        cout << "ERROR. Problem opening the file.";
-    }
+long long int ex29(int n){
+  long long int aux,aux2;
+  aux2=(int)pow(n,4)%91;
+  aux=(int)pow(aux2,4)%91;
+  aux=aux*aux2*aux2*aux2%91;
+  aux=aux*n%91;
+  return aux;
 }
 
 string denc1(string st){
@@ -39,29 +35,28 @@ string denc1(string st){
 	  if (val>32){
 		val=val-4;
 		if(val<33){
-			val=val+165-33;
+			val=val+126-33;
 		}
 	  }
 	  st[i]=val;
 	}
-    cout << st << endl;
 	return st;
 }
 
-void enc1(string st){
+string enc1(string st){
 	int i;
 	int val;
 	for(i=0;i<st.length();i++){
 	val=st[i];
 	  if (val>32){
 		val=val+4;
-		if(val>165){
-			val=val-165+32;
+		if(val>126){
+			val=val-126+32;
 		}
 	  }
 	  st[i]=val;
 	}
-	escribirFichero(st);
+	return st;
 }
 
 string denc2(string st){
@@ -69,23 +64,12 @@ string denc2(string st){
 	int val;
 	long long int aux;
 	for(i=0;i<st.length();i++){
-		val=st[i]-32;
-	  if(val<33){
-		aux=(pow(val,7));
-		st[i]=aux%33+32;
-	  }else if(val<66){
-		aux=(pow(val-33,7));
-		st[i]=aux%33+32+33;
-	  }else if(val<99){
-		aux=(pow(val-66,7));
-		st[i]=aux%33+32+66;
-	  }else{
-		aux=(pow(val-99,7));
-		st[i]=aux%33+32+99;
+	  if(st[i]>32){	
+	    val=st[i]-32;
+	    st[i]=ex29(val)%91+32;	
+
 	  }
 	}
-	escribirFichero(st);
-    cout << st << endl;
 	return st;
 }
 
@@ -94,23 +78,12 @@ string enc2(string st){
 	int val;
 	long long int aux;
 	for(i=0;i<st.length();i++){
-	  val=st[i]-32;
-	  if(val<33){
-		aux=(pow(val,3));
-		st[i]=aux%33+32;
-	  }else if(val<66){
-		aux=(pow(val-33,3));
-		st[i]=aux%33+32+33;
-	  }else if(val<99){
-		aux=(pow(val-66,3));
-		st[i]=aux%33+32+66;
-	  }else{
-		aux=(pow(val-99,3));
-		st[i]=aux%33+32+99;
-	  }
+	  if(st[i]>32){
+	    val=st[i]-32;
+	    aux=pow(val,5);
+ 	    st[i]=aux%91+32;
+	  }	  
 	}
-	escribirFichero(st);
-    cout << st << endl;
 	return st;
 }
 
@@ -120,15 +93,13 @@ string denc3(string st){
 	for(i=0;i<st.length();i++){
 	  if(st[i]>32){
 		val=st[i]-32;
-		val=46*(val-3)%91;
+		val=48*(val-3)%95;
 		if(val<0){
-		  val=91+val;
+		  val=95+val;
 		}
 		st[i]=val+32;
 	  }
 	}
-    escribirFichero(st);
-    cout << st << endl;
 	return st;
 }
 
@@ -137,159 +108,198 @@ string enc3(string st){
 	int val;
 	for(i=0;i<st.length();i++){
 	  if(st[i]>32){
-		val=st[i]-32;
-		val=(2*val+3)%91;
+		val=st[i]-32;		
+		val=(2*val+3)%95;
 		st[i]=val+32;
 	  }
 	}
-    escribirFichero(st);
-    cout << st << endl;
 	return st;
 }
 
-void leerFichero(char eleccion)
+void escribir(vector<string> texto){
+   fstream fich;
+   fich.open(OUTPUT.c_str() , ios::out);
+   
+   if(fich.is_open()){
+    for(int i=0; i<texto.size(); i++){
+        fich<<texto[i];
+        fich<<"\n";
+    }
+       
+   }
+
+   fich.close();
+}
+
+bool leerFichero(char eleccion)
 {
     ifstream f;
 
-    string leer;
-    string nombreFichero = "fichero.txt";
-
-    //comprobamos que no se haya introducido el nombre del fichero
-    if(nombreFichero == "")
-    {
-        cout << "Filename: ";
-        getline(cin, nombreFichero);
-    }
-
-    f.open(nombreFichero.c_str());//abrimos el fichero
+    bool leido = false;
+   
+    string leer="";
+    string linea="";
+    vector<string> concatenado;
+    
+    f.open(INPUT.c_str());//abrimos el fichero
 
     if(f.is_open())
     {
-        do
-        {
+       getline(f, leer);
+        while(!f.eof()){
+            
             if(eleccion == '1')
             {
-                getline(f, leer);
-
-                enc1(leer);
+               linea=enc1(leer);
+               
             }
             else if(eleccion == '2')
             {
-                getline(f, leer);
-                 enc2(leer);
+                linea=enc2(leer);
             }
             else if(eleccion == '3')
             {
-                getline(f, leer);
-                 enc3(leer);
+                 linea=enc3(leer);
+            }else if(eleccion == '4')
+            {
+                linea=denc1(leer);
+            }else if(eleccion == '5')
+            {
+                linea=denc2(leer);
+            }else if(eleccion == '6')
+            {
+                linea=denc3(leer);
             }
             else
             {
                 cout << "\nCagada Monumental" << endl;
             }
+            concatenado.push_back(linea);
+            getline(f, leer);
+            linea="";
+       
+        }
+         f.close();//Cerramos el fichero
+         escribir(concatenado);
 
-        } while(f.eof()==false);
-
-        f.close();//Cerramos el fichero
+         leido = true;
     }
     else
     {
-        cout << "Error. Can't open file.";
+        cout << "Error. Can't open file." << endl;
     }
+
+    return leido;
 }
 
-void encriptar()
+void menu(char op)
 {
-    char op;
-    char eleccion;
-    do
-    {
-        cout << "\nWhich type of encrypt do you want?" << endl;
-        cout << "Type 1" << endl;
-        cout << "Type 2" << endl;
-        cout << "Type 3\n" << endl;
-        cout << "Select: ";
+    long double t_inicial, t_final;
+    string nuevo;
+    bool leido;
+    
+    switch(op) {
+            
+        case '1':
+            t_inicial = tiempo();
+            leido = leerFichero(op);
+            t_final = tiempo();
 
-        cin >> op;
+            if(leido == true) {
+                cout << ENCRYPT_TIME << t_final - t_inicial << " s" << endl;
+            }
 
+            return;
+        break;
+                
+        case '2':
+            t_inicial = tiempo();
+            leido = leerFichero(op);
+            t_final = tiempo();
+
+            if(leido == true) {
+                cout << ENCRYPT_TIME << t_final - t_inicial << " s" << endl;
+            }
+
+            return;
+        break;
+                
+        case '3':
+            t_inicial = tiempo();
+            leido = leerFichero(op);
+            t_final = tiempo();
+
+            if(leido == true) {
+                cout << ENCRYPT_TIME << t_final - t_inicial << " s" << endl;
+            }
+
+            return;
+        break;
+
+        case '4':
+            t_inicial = tiempo();
+            leido = leerFichero(op);
+            t_final = tiempo();
+
+            if(leido == true) {
+                cout << DECRYPT_TIME << t_final - t_inicial << " s" << endl;
+            }
+
+            return;
+        break;
+                
+        case '5':
+            t_inicial = tiempo();
+            leido = leerFichero(op);
+            t_final = tiempo();
+
+            if(leido == true) {
+                cout << DECRYPT_TIME << t_final - t_inicial << " s" << endl;
+            }
+
+            return;
+        break;
+                
+        case '6':
+            t_inicial = tiempo();
+            leido = leerFichero(op);
+            t_final = tiempo();
+
+            if(leido == true) {
+                cout << DECRYPT_TIME << t_final - t_inicial << " s" << endl;
+            }
+
+            return;
+        break;
+                
+        default: cout << "Error. Option not valid." << endl;
+            return;
+       
+    } while(op != '1' && op != '2' && op != '3' && op != '4' && op != '5' && op != '6');
+}
+
+int main(int argc, char *argv[]) {
+
+    if(argc != 4) {
+        cout << "Syntax Error." << endl;
+        cout << "Correct syntax: <executable> <input_filename> <output_filename> <option>" << endl;
+
+        cout << "\nOPTIONS:\n" << endl;
+
+        cout << "1. Encription type 1" << endl;
+        cout << "2. Encription type 2" << endl;
+        cout << "3. Encription type 3" << endl;
         cout << endl;
 
-        switch(op)
-        {
-            case '1':
-                leerFichero(op);
+        cout << "4. Decription type 1" << endl;
+        cout << "5. Decription type 2" << endl;
+        cout << "6. Decription type 3\n" << endl;
+    }
+    else {
+        INPUT = argv[1];
+        OUTPUT = argv[2];
+        char opt = (char) *argv[3];
 
-                break;
-
-            case '2':
-                leerFichero('2');
-
-                break;
-
-            case '3':
-                leerFichero('3');
-                break;
-
-            default: cout << "\nError. Option not valid.\n" << endl;
-        }
-
-    } while(op != '1' && op != '2' && op != '3');
-}
-
-void desencriptar()
-{
-
-}
-
-void menu()
-{
-    long double t_inicial, t_final, t_ejecucion;
-    char op;
-     string nuevo;
-
-    do {
-        cout << "\n1. Encrypt file." << endl;
-        cout << "2. Decrypt file." << endl;
-        cout << "3. Exit.\n" << endl;
-
-        cout << "Select option: ";
-        cin >> op;
-
-        switch(op) {
-
-            case '1':
-                t_inicial = tiempo();
-                // Llamada a la función de encriptación.
-                encriptar();
-                t_final = tiempo();
-
-                cout << "Time needed to encrypt the file: " << t_final - t_inicial << " s" << endl;
-
-                break;
-
-            case '2':
-                t_inicial = tiempo();
-                // Llamada a la función de desencriptación.
-                desencriptar();
-                t_final = tiempo();
-
-                cout << "Time needed to decrypt the file: " << t_final - t_inicial << " s" << endl;
-
-                break;
-
-            case '3':
-                cout << "The program has ended." << endl;
-                break;
-
-
-            default: cout << "\nError. Option not valid.\n" << endl;
-        }
-
-    } while(op != '3');
-}
-
-int main()
-{
-    menu();
-
+        menu(opt);
+    }
 }
