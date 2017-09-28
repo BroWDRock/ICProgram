@@ -286,14 +286,14 @@ int main(int argc, char *argv[]) {
 
         cout << "\nOPTIONS:\n" << endl;
 
-        cout << "1. Encription type 1" << endl;
-        cout << "2. Encription type 2" << endl;
-        cout << "3. Encription type 3" << endl;
+        cout << "1. Caesar encryption" << endl;
+        cout << "2. RSA encryption" << endl;
+        cout << "3. Asymmetric encription" << endl;
         cout << endl;
 
-        cout << "4. Decription type 1" << endl;
-        cout << "5. Decription type 2" << endl;
-        cout << "6. Decription type 3\n" << endl;
+        cout << "4. Caesar decryption" << endl;
+        cout << "5. RSA decryption" << endl;
+        cout << "6. Assymmetric decryption\n" << endl;
     }
     else {
         INPUT = argv[1];
