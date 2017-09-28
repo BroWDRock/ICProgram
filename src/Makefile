@@ -1,5 +1,20 @@
-translator: translator.o
-	g++ -o translator translator.o
+CC=g++
+SOURCE = translator.cc
+PROGRAM_NAME = translator
+OBJ = translator.o
+OUTPUT=output.txt
+ARGS=input.txt output.txt 1
 
-translator.o: translator.cc
-	g++ -c translator.cc
+translator: $(OBJ)
+	$(CC) -o $(PROGRAM_NAME) $(OBJ)
+
+translator.o: $(SOURCE)
+	$(CC) -c $(SOURCE)
+
+clean:
+	$(RM) $(OBJ)
+	$(RM) $(PROGRAM_NAME)
+	$(RM) $(OUTPUT)
+
+run: $(PROGRAM_NAME)
+	./$(PROGRAM_NAME) $(ARGS)
