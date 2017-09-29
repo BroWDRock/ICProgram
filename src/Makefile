@@ -14,7 +14,6 @@ translator.o: $(SOURCE)
 clean:
 	$(RM) $(OBJ)
 	$(RM) $(PROGRAM_NAME)
-	$(RM) $(OUTPUT)
 
 run: $(PROGRAM_NAME)
 	./$(PROGRAM_NAME) $(ARGS)
