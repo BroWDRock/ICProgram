@@ -10,6 +10,7 @@ string INPUT, OUTPUT;
 
 const string ENCRYPT_TIME = "Time needed to encrypt the file: ";
 const string DECRYPT_TIME = "Time needed to decrypt the file: ";
+const string ERROR_FICH = "Error. Can't open file.";
 
 long double tiempo(){
 	struct rusage usage;
@@ -186,7 +187,7 @@ bool leerFichero(char eleccion)
     }
     else
     {
-        cout << "Error. Can't open file." << endl;
+        cout << ERROR_FICH << endl;
     }
 
     return leido;
@@ -278,28 +279,60 @@ void menu(char op)
     } while(op != '1' && op != '2' && op != '3' && op != '4' && op != '5' && op != '6');
 }
 
+void procesarLinea(string linea){
+    int i=0;
+    char opc;
+
+    while(i<linea.length()){
+
+        while(i<linea.length() && linea[i]!=' '){
+            INPUT+=linea[i];
+            i++;
+        }
+        
+        i++;
+
+        while(i<linea.length() && linea[i]!=' '){
+            OUTPUT+=linea[i];
+            i++;
+        }
+        
+        i++;
+
+        opc=linea[i];
+
+        i++;
+    }
+
+    menu(opc);
+}
+
+void procesarFichero(string indice){
+    ifstream fich;
+    string linea;
+
+    fich.open(indice.c_str());
+
+    if(fich.is_open()){
+        getline(fich, linea);
+
+        while(fich.eof() == false){
+            procesarLinea(linea);
+            getline(fich,linea);
+            INPUT="";
+            OUTPUT="";
+        }
+    }
+}
+
 int main(int argc, char *argv[]) {
 
-    if(argc != 4) {
+    if(argc != 2) {
         cout << "Syntax Error." << endl;
-        cout << "Correct syntax: <executable> <input_filename> <output_filename> <option>" << endl;
-
-        cout << "\nOPTIONS:\n" << endl;
-
-        cout << "1. Caesar encryption" << endl;
-        cout << "2. RSA encryption" << endl;
-        cout << "3. Asymmetric encription" << endl;
-        cout << endl;
-
-        cout << "4. Caesar decryption" << endl;
-        cout << "5. RSA decryption" << endl;
-        cout << "6. Assymmetric decryption\n" << endl;
+        cout << "Correct syntax: <executable> <index_file>" << endl;
     }
     else {
-        INPUT = argv[1];
-        OUTPUT = argv[2];
-        char opt = (char) *argv[3];
-
-        menu(opt);
+        string index = argv[1];
+        procesarFichero(index);
     }
 }

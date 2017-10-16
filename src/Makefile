@@ -2,8 +2,7 @@ CC=g++
 SOURCE = translator.cc
 PROGRAM_NAME = translator
 OBJ = translator.o
-OUTPUT=output.txt
-ARGS=input.txt output.txt 1
+ARGS=index.txt
 
 translator: $(OBJ)
 	$(CC) -o $(PROGRAM_NAME) $(OBJ)
