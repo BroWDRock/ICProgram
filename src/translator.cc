@@ -8,8 +8,6 @@ using namespace std;
 
 string INPUT, OUTPUT;
 
-const string ENCRYPT_TIME = "Time needed to encrypt the file: ";
-const string DECRYPT_TIME = "Time needed to decrypt the file: ";
 const string ERROR_FICH = "Error. Can't open file.";
 
 long double tiempo(){
@@ -202,74 +200,32 @@ void menu(char op)
     switch(op) {
             
         case '1':
-            t_inicial = tiempo();
             leido = leerFichero(op);
-            t_final = tiempo();
-
-            if(leido == true) {
-                cout << ENCRYPT_TIME << t_final - t_inicial << " s" << endl;
-            }
-
             return;
         break;
                 
         case '2':
-            t_inicial = tiempo();
             leido = leerFichero(op);
-            t_final = tiempo();
-
-            if(leido == true) {
-                cout << ENCRYPT_TIME << t_final - t_inicial << " s" << endl;
-            }
-
             return;
         break;
                 
         case '3':
-            t_inicial = tiempo();
             leido = leerFichero(op);
-            t_final = tiempo();
-
-            if(leido == true) {
-                cout << ENCRYPT_TIME << t_final - t_inicial << " s" << endl;
-            }
-
             return;
         break;
 
         case '4':
-            t_inicial = tiempo();
             leido = leerFichero(op);
-            t_final = tiempo();
-
-            if(leido == true) {
-                cout << DECRYPT_TIME << t_final - t_inicial << " s" << endl;
-            }
-
             return;
         break;
                 
         case '5':
-            t_inicial = tiempo();
             leido = leerFichero(op);
-            t_final = tiempo();
-
-            if(leido == true) {
-                cout << DECRYPT_TIME << t_final - t_inicial << " s" << endl;
-            }
-
             return;
         break;
                 
         case '6':
-            t_inicial = tiempo();
             leido = leerFichero(op);
-            t_final = tiempo();
-
-            if(leido == true) {
-                cout << DECRYPT_TIME << t_final - t_inicial << " s" << endl;
-            }
-
             return;
         break;
                 
@@ -326,6 +282,7 @@ void procesarFichero(string indice){
 }
 
 int main(int argc, char *argv[]) {
+    long double t_inicial, t_final;
 
     if(argc != 2) {
         cout << "Syntax Error." << endl;
@@ -333,6 +290,11 @@ int main(int argc, char *argv[]) {
     }
     else {
         string index = argv[1];
+
+        t_inicial = tiempo();
         procesarFichero(index);
+        t_final = tiempo();
+
+        cout << "Time: " << t_final - t_inicial << " s" << endl;
     }
 }
