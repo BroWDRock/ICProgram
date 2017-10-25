@@ -1,2 +1,6 @@
 input.txt output.txt 1
+entrada.txt salida.txt 2
+in.txt out.txt 3
 output.txt resultado.txt 4
+salida.txt res.txt 5
+out.txt r.txt 6

@@ -1,14 +1,15 @@
 CC=g++
+FLAGS=-O3
 SOURCE = translator.cc
 PROGRAM_NAME = translator
 OBJ = translator.o
 ARGS=index.txt
 
 translator: $(OBJ)
-	$(CC) -o $(PROGRAM_NAME) $(OBJ)
+	$(CC) $(FLAGS) -o $(PROGRAM_NAME) $(OBJ)
 
 translator.o: $(SOURCE)
-	$(CC) -c $(SOURCE)
+	$(CC) -O3 -c $(SOURCE)
 
 clean:
 	$(RM) $(OBJ)
