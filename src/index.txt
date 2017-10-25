@@ -1,6 +1,6 @@
-input.txt output.txt 1
-entrada.txt salida.txt 2
-in.txt out.txt 3
-output.txt resultado.txt 4
-salida.txt res.txt 5
-out.txt r.txt 6
+input1.txt output1.txt 1
+input2.txt output2.txt 2
+input3.txt output3.txt 3
+output1.txt result1.txt 4
+output2.txt result2.txt 5
+output3.txt result3.txt 6
