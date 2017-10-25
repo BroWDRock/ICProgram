@@ -17,6 +17,21 @@ long double tiempo(){
 		(long double) usage.ru_utime.tv_usec/1e6);
 }
 
+int numberlines(string indice){
+    int lineas = 0;
+    ifstream fich;
+    string aux;
+    fich.open(indice.c_str());
+    if(fich.is_open()){
+        while(fich.eof() == false){
+            getline(fich, aux);
+            lineas++;
+        }
+    }
+    fich.close();
+    return lineas;
+}
+
 long long int ex29(int n){
   long long int aux,aux2;
   aux2=(int)pow(n,4)%91;
@@ -266,17 +281,36 @@ void procesarLinea(string linea){
 void procesarFichero(string indice){
     ifstream fich;
     string linea;
+    int chunksize, chunk;
 
+    chunksize = numberlines(indice);
     fich.open(indice.c_str());
 
     if(fich.is_open()){
         getline(fich, linea);
-
-        while(fich.eof() == false){
+        /*while(fich.eof() == false){
             procesarLinea(linea);
             getline(fich,linea);
             INPUT="";
             OUTPUT="";
+        }*/
+        #pragma opm parallel private(linea)
+        {
+            #pragma omp for schedule(dynamic) nowait
+            {
+                for(;;){
+                    if(!fich.eof())
+                    {
+                        procesarLinea(linea);
+                        getline(fich, linea);
+                        INPUT = "";
+                        OUTPUT = "";
+                    }
+                    else{ break; }
+                }
+            }
+
+
         }
     }
 }
