@@ -3,10 +3,9 @@
 #include <sys/resource.h>
 #include <string>
 #include <math.h>
+#include <omp.h>
 #include <vector>
 using namespace std;
-
-string INPUT, OUTPUT;
 
 const string ERROR_FICH = "Error. Can't open file.";
 
@@ -130,9 +129,9 @@ string enc3(string st){
 	return st;
 }
 
-void escribir(vector<string> texto){
+void escribir(vector<string> texto, string out){
    fstream fich;
-   fich.open(OUTPUT.c_str() , ios::out);
+   fich.open(out.c_str() , ios::out);
    
    if(fich.is_open()){
     for(int i=0; i<texto.size(); i++){
@@ -145,7 +144,7 @@ void escribir(vector<string> texto){
    fich.close();
 }
 
-bool leerFichero(char eleccion)
+bool leerFichero(char eleccion, string in, string out)
 {
     ifstream f;
 
@@ -154,8 +153,9 @@ bool leerFichero(char eleccion)
     string leer="";
     string linea="";
     vector<string> concatenado;
-    
-    f.open(INPUT.c_str());//abrimos el fichero
+    cout << "INPUT desde leer fichero: " << in << endl;
+    cout << "OUTPUT desde leer fichero: " << out << endl;
+    f.open(in.c_str());//abrimos el fichero
 
     if(f.is_open())
     {
@@ -194,7 +194,7 @@ bool leerFichero(char eleccion)
        
         }
          f.close();//Cerramos el fichero
-         escribir(concatenado);
+         escribir(concatenado, out);
 
          leido = true;
     }
@@ -206,65 +206,29 @@ bool leerFichero(char eleccion)
     return leido;
 }
 
-void menu(char op)
-{
-    long double t_inicial, t_final;
-    string nuevo;
-    bool leido;
-    
-    switch(op) {
-            
-        case '1':
-            leido = leerFichero(op);
-            return;
-        break;
-                
-        case '2':
-            leido = leerFichero(op);
-            return;
-        break;
-                
-        case '3':
-            leido = leerFichero(op);
-            return;
-        break;
-
-        case '4':
-            leido = leerFichero(op);
-            return;
-        break;
-                
-        case '5':
-            leido = leerFichero(op);
-            return;
-        break;
-                
-        case '6':
-            leido = leerFichero(op);
-            return;
-        break;
-                
-        default: cout << "Error. Option not valid." << endl;
-            return;
-       
-    } while(op != '1' && op != '2' && op != '3' && op != '4' && op != '5' && op != '6');
-}
-
-void procesarLinea(string linea){
+void procesarLinea(string linea, string input, string output){
     int i=0;
     char opc;
 
+    /*if(INPUT != ""){
+        INPUT = "";
+    }
+    if(OUTPUT != ""){
+        OUTPUT = "";
+    }
+    cout << "INPUT: "<< INPUT << endl;
+    cout << "OUTPUT: " << OUTPUT << endl;*/
     while(i<linea.length()){
 
         while(i<linea.length() && linea[i]!=' '){
-            INPUT+=linea[i];
+            input+=linea[i];
             i++;
         }
         
         i++;
 
         while(i<linea.length() && linea[i]!=' '){
-            OUTPUT+=linea[i];
+            output+=linea[i];
             i++;
         }
         
@@ -275,44 +239,38 @@ void procesarLinea(string linea){
         i++;
     }
 
-    menu(opc);
+    cout << "Línea: " << linea << endl;
+    cout << "INPUT: " << input << endl;
+    cout << "OUTPUT: " << output << endl;
+    cout << "opc: " << opc << endl;
+    leerFichero(opc, input, output);
 }
 
 void procesarFichero(string indice){
     ifstream fich;
-    string linea;
-    int chunksize, chunk;
+    string linea, in="", out="";
+    int chunksize, tid;
+    vector<string> lineas;
 
     chunksize = numberlines(indice);
     fich.open(indice.c_str());
-
-    if(fich.is_open()){
-        getline(fich, linea);
-        /*while(fich.eof() == false){
-            procesarLinea(linea);
-            getline(fich,linea);
-            INPUT="";
-            OUTPUT="";
-        }*/
-        #pragma opm parallel private(linea)
-        {
-            #pragma omp for schedule(dynamic) nowait
-            {
-                for(;;){
-                    if(!fich.eof())
-                    {
-                        procesarLinea(linea);
-                        getline(fich, linea);
-                        INPUT = "";
-                        OUTPUT = "";
-                    }
-                    else{ break; }
-                }
-            }
-
-
+    for(int i = 0; i < chunksize; i++)
+    {
+        if (fich.is_open()){
+            getline(fich, linea);
+            lineas.push_back(linea);
         }
     }
+    if(fich.is_open())
+    {
+        #pragma omp parallel for num_threads(chunksize) private(in, out, linea)
+            for(int x=0; x<lineas.size() ;x++){
+                cout<<chunksize<<endl;
+                linea = lineas[x];
+                //cout << linea << endl;
+                procesarLinea(linea, in, out);
+            }
+    }   
 }
 
 int main(int argc, char *argv[]) {
