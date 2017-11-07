@@ -43,6 +43,7 @@ long long int ex29(int n){
 string denc1(string st){
 	int i;
 	int val;
+	 #pragma omp simd
 	for(i=0;i<st.length();i++){
 	val=st[i];
 	  if (val>32){
@@ -59,6 +60,7 @@ string denc1(string st){
 string enc1(string st){
 	int i;
 	int val;
+	#pragma omp simd
 	for(i=0;i<st.length();i++){
 	val=st[i];
 	  if (val>32){
@@ -76,6 +78,7 @@ string denc2(string st){
 	int i;
 	int val;
 	long long int aux;
+	#pragma omp simd
 	for(i=0;i<st.length();i++){
 	  if(st[i]>32){	
 	    val=st[i]-32;
@@ -90,6 +93,7 @@ string enc2(string st){
 	int i;
 	int val;
 	long long int aux;
+	#pragma omp simd
 	for(i=0;i<st.length();i++){
 	  if(st[i]>32){
 	    val=st[i]-32;
@@ -103,6 +107,7 @@ string enc2(string st){
 string denc3(string st){
 	int i;
 	int val;
+	#pragma omp simd
 	for(i=0;i<st.length();i++){
 	  if(st[i]>32){
 		val=st[i]-33;
@@ -119,6 +124,7 @@ string denc3(string st){
 string enc3(string st){
 	int i;
 	int val;
+	#pragma omp simd
 	for(i=0;i<st.length();i++){
 	  if(st[i]>32){
 		val=st[i]-33;		
@@ -218,6 +224,8 @@ void procesarLinea(string linea, string input, string output){
     }
     cout << "INPUT: "<< INPUT << endl;
     cout << "OUTPUT: " << OUTPUT << endl;*/
+
+
     while(i<linea.length()){
 
         while(i<linea.length() && linea[i]!=' '){
