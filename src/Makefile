@@ -1,5 +1,5 @@
 CC=g++
-FLAGS=-fopenmp
+FLAGS=-fopenmp -O3
 
 SOURCE = translator.cc
 PROGRAM_NAME = translator
@@ -10,7 +10,7 @@ translator: $(OBJ)
 	$(CC) $(FLAGS) -o $(PROGRAM_NAME) $(OBJ)
 
 translator.o: $(SOURCE)
-	$(CC) -fopenmp -c $(SOURCE)
+	$(CC) $(FLAGS) -c $(SOURCE)
 
 
 clean:
