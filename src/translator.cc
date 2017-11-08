@@ -46,6 +46,7 @@ string denc1(string st){
 	int i;
 	int val;
 	string nuevo;
+
 	 #pragma omp simd
 	for(i=0;i<st.length();i++){
 	val=st[i];
@@ -163,7 +164,7 @@ bool leerFichero(char eleccion, string in, string out)
     string leer="";
     string linea="";
     vector<string> concatenado;
-    f.open(in.c_str());//abrimos el fichero
+    f.open(in.c_str());
 
     if(f.is_open())
     {
@@ -252,18 +253,19 @@ void procesarFichero(string indice){
     chunksize = numberlines(indice);
     fich.open(indice.c_str());
       if (fich.is_open()){
-          //no merece la pena paralelizar
-    for(int i = 0; i < chunksize; i++)
-    {
+
+        for(int i = 0; i < chunksize; i++)
+        {
             getline(fich, linea);
             lineas.push_back(linea);
             
+        }
     }
-      }
+    
     if(fich.is_open())
     {
         #pragma omp parallel for num_threads(chunksize) private(in, out, linea)
-            for(int x=0; x<lineas.size()-1 ;x++){
+            for(int x=0; x<lineas.size()-1; x++){
                 linea = lineas[x];
 
                 #pragma omp parallel
