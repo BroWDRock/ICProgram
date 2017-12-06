@@ -31,6 +31,7 @@ int numberlines(string indice){
     return lineas;
 }
 
+
 long long int ex29(int n){
   long long int aux,aux2;
   aux2=(int)pow(n,4)%91;
@@ -40,9 +41,12 @@ long long int ex29(int n){
   return aux;
 }
 
+
 string denc1(string st){
 	int i;
 	int val;
+	string nuevo;
+
 	 #pragma omp simd
 	for(i=0;i<st.length();i++){
 	val=st[i];
@@ -52,9 +56,9 @@ string denc1(string st){
 			val=val+126-33;
 		}
 	  }
-	  st[i]=val;
+	  nuevo+=val;
 	}
-	return st;
+	return nuevo;
 }
 
 string enc1(string st){
@@ -140,6 +144,7 @@ void escribir(vector<string> texto, string out){
    fich.open(out.c_str() , ios::out);
    
    if(fich.is_open()){
+    
     for(int i=0; i<texto.size(); i++){
         fich<<texto[i];
         fich<<"\n";
@@ -159,9 +164,7 @@ bool leerFichero(char eleccion, string in, string out)
     string leer="";
     string linea="";
     vector<string> concatenado;
-    cout << "INPUT desde leer fichero: " << in << endl;
-    cout << "OUTPUT desde leer fichero: " << out << endl;
-    f.open(in.c_str());//abrimos el fichero
+    f.open(in.c_str());
 
     if(f.is_open())
     {
@@ -199,7 +202,8 @@ bool leerFichero(char eleccion, string in, string out)
             linea="";
        
         }
-         f.close();//Cerramos el fichero
+         f.close();
+         
          escribir(concatenado, out);
 
          leido = true;
@@ -215,16 +219,6 @@ bool leerFichero(char eleccion, string in, string out)
 void procesarLinea(string linea, string input, string output){
     int i=0;
     char opc;
-
-    /*if(INPUT != ""){
-        INPUT = "";
-    }
-    if(OUTPUT != ""){
-        OUTPUT = "";
-    }
-    cout << "INPUT: "<< INPUT << endl;
-    cout << "OUTPUT: " << OUTPUT << endl;*/
-
 
     while(i<linea.length()){
 
@@ -247,10 +241,6 @@ void procesarLinea(string linea, string input, string output){
         i++;
     }
 
-    cout << "Línea: " << linea << endl;
-    cout << "INPUT: " << input << endl;
-    cout << "OUTPUT: " << output << endl;
-    cout << "opc: " << opc << endl;
     leerFichero(opc, input, output);
 }
 
@@ -262,21 +252,26 @@ void procesarFichero(string indice){
 
     chunksize = numberlines(indice);
     fich.open(indice.c_str());
-    for(int i = 0; i < chunksize; i++)
-    {
-        if (fich.is_open()){
+      if (fich.is_open()){
+
+        for(int i = 0; i < chunksize; i++)
+        {
             getline(fich, linea);
             lineas.push_back(linea);
+            
         }
     }
+    
     if(fich.is_open())
     {
         #pragma omp parallel for num_threads(chunksize) private(in, out, linea)
-            for(int x=0; x<lineas.size() ;x++){
-                cout<<chunksize<<endl;
+            for(int x=0; x<lineas.size()-1; x++){
                 linea = lineas[x];
-                //cout << linea << endl;
+
+                #pragma omp parallel
+                {
                 procesarLinea(linea, in, out);
+                }
             }
     }   
 }
