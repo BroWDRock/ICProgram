@@ -155,7 +155,7 @@ void escribir(vector<string> texto, string out){
    fich.close();
 }
 
-bool leerFichero(char eleccion, string in, string out)
+bool leerFichero(string eleccion, string in, string out)
 {
     ifstream f;
 
@@ -171,25 +171,24 @@ bool leerFichero(char eleccion, string in, string out)
        getline(f, leer);
         while(!f.eof()){
             
-            if(eleccion == '1')
+            if(eleccion == "1")
             {
                linea=enc1(leer);
-               
             }
-            else if(eleccion == '2')
+            else if(eleccion == "2")
             {
                 linea=enc2(leer);
             }
-            else if(eleccion == '3')
+            else if(eleccion == "3")
             {
                  linea=enc3(leer);
-            }else if(eleccion == '4')
+            }else if(eleccion == "4")
             {
                 linea=denc1(leer);
-            }else if(eleccion == '5')
+            }else if(eleccion == "5")
             {
                 linea=denc2(leer);
-            }else if(eleccion == '6')
+            }else if(eleccion == "6")
             {
                 linea=denc3(leer);
             }
@@ -216,6 +215,7 @@ bool leerFichero(char eleccion, string in, string out)
     return leido;
 }
 
+/*
 void procesarLinea(string linea, string input, string output){
     int i=0;
     char opc;
@@ -243,15 +243,17 @@ void procesarLinea(string linea, string input, string output){
 
     leerFichero(opc, input, output);
 }
+*/
 
-void procesarFichero(string indice){
+/*
+void procesarFichero(string input, string output, char op){
     ifstream fich;
     string linea, in="", out="";
     int chunksize, tid;
     vector<string> lineas;
 
-    chunksize = numberlines(indice);
-    fich.open(indice.c_str());
+    chunksize = numberlines(input);
+    fich.open(input.c_str());
       if (fich.is_open()){
 
         for(int i = 0; i < chunksize; i++)
@@ -270,12 +272,34 @@ void procesarFichero(string indice){
 
                 #pragma omp parallel
                 {
-                procesarLinea(linea, in, out);
+                leerFichero(op, input, output);
                 }
             }
     }   
 }
+*/
 
+int main(int argc, char *argv[]) {
+    long double t_inicial, t_final;
+
+    if(argc != 4) {
+        cout << "Syntax Error." << endl;
+        cout << "Correct syntax: <executable> <input_file> <output_file> option" << endl;
+    }
+    else {
+        string input = argv[1];
+        string output = argv[2];
+        string op = argv[3];
+
+        t_inicial = tiempo();
+        leerFichero(op, input, output);
+        t_final = tiempo();
+
+        cout << "Time: " << t_final - t_inicial << " s" << endl;
+    }
+}
+
+/*
 int main(int argc, char *argv[]) {
     long double t_inicial, t_final;
 
@@ -293,3 +317,4 @@ int main(int argc, char *argv[]) {
         cout << "Time: " << t_final - t_inicial << " s" << endl;
     }
 }
+*/
