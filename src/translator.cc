@@ -5,7 +5,15 @@
 #include <math.h>
 #include <omp.h>
 #include <vector>
+
 using namespace std;
+
+
+//constantes de mpi
+#define MAX_PROCESSES 10
+
+
+
 
 const string ERROR_FICH = "Error. Can't open file.";
 
@@ -155,6 +163,7 @@ void escribir(vector<string> texto, string out){
    fich.close();
 }
 
+//------------------------------------------------------------------- metodo de mpi
 bool leerFichero(string eleccion, string in, string out)
 {
     ifstream f;
@@ -162,48 +171,41 @@ bool leerFichero(string eleccion, string in, string out)
     bool leido = false;
    
     string leer="";
-    string linea="";
-    vector<string> concatenado;
+    string linea;
     f.open(in.c_str());
+    
+    char caracteres[1000][200];  // 1000 lineas de 200 caracteres
+    int contador=0;             // contador de lineas 
 
     if(f.is_open())
     {
        getline(f, leer);
+       
+       for(int j=0; j<leer.size(); j++){   // for para cada linea a caracteres
+        caracteres[contador][j]=leer[j];
+       }
+   
         while(!f.eof()){
+            contador++;         // aumento las lineas
+            getline(f, leer);      //leo la siguente linea
+           
             
-            if(eleccion == "1")
-            {
-               linea=enc1(leer);
-            }
-            else if(eleccion == "2")
-            {
-                linea=enc2(leer);
-            }
-            else if(eleccion == "3")
-            {
-                 linea=enc3(leer);
-            }else if(eleccion == "4")
-            {
-                linea=denc1(leer);
-            }else if(eleccion == "5")
-            {
-                linea=denc2(leer);
-            }else if(eleccion == "6")
-            {
-                linea=denc3(leer);
-            }
-            else
-            {
-                cout << "\nCagada Monumental" << endl;
-            }
-            concatenado.push_back(linea);
-            getline(f, leer);
-            linea="";
+        for(int j=0; j<leer.size(); j++){   // for para cada linea a caracteres
+            caracteres[contador][j]=leer[j];
+        }
        
         }
          f.close();
          
-         escribir(concatenado, out);
+         //ahora tengo un vector de caracteres [linea(num)] [caracteres de la linea]
+         
+         //ahora va el scatter
+         
+         //despues el if infinito ese 
+         
+         // despues el gather
+         
+         //escribir(concatenado, out);
 
          leido = true;
     }
@@ -215,6 +217,8 @@ bool leerFichero(string eleccion, string in, string out)
     return leido;
 }
 
+
+//--------------------------------------------------------------------------------fin mpi metodo
 /*
 void procesarLinea(string linea, string input, string output){
     int i=0;
@@ -281,6 +285,11 @@ void procesarFichero(string input, string output, char op){
 
 int main(int argc, char *argv[]) {
     long double t_inicial, t_final;
+    
+    // Setup MPI
+    MPI_Init( &argc, &argv ); //-------------------------------- inicio mpi
+    MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+    MPI_Comm_size( MPI_COMM_WORLD, &size );
 
     if(argc != 4) {
         cout << "Syntax Error." << endl;
@@ -297,6 +306,7 @@ int main(int argc, char *argv[]) {
 
         cout << "Time: " << t_final - t_inicial << " s" << endl;
     }
+          MPI_Finalize(); ////////////////////////////---- fin de mpi
 }
 
 /*
@@ -310,7 +320,7 @@ int main(int argc, char *argv[]) {
     else {
         string index = argv[1];
 
-        t_inicial = tiempo();
+        t_inicial = tiempo();º
         procesarFichero(index);
         t_final = tiempo();
 
@@ -318,3 +328,6 @@ int main(int argc, char *argv[]) {
     }
 }
 */
+
+
+
